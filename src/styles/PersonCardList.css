@@ -1,0 +1,29 @@
+.person-card-list {
+    padding : 1rem 0 1rem 0;
+}
+
+.circle-image {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: "inline";
+    margin: 0 0.5rem 0 0;
+}
+
+.list-group {
+    max-height: 80vh;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+li {
+    cursor: pointer;
+}
+
+li:hover {
+    background-color:#e5e5e5;
+}
+
+.selected {
+    background-color: #d9d9fc;
+}
