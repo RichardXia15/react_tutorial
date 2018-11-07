@@ -1,0 +1,7 @@
+.circle-image {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: "inline";
+    margin: 0 0.5rem 0 0;
+}

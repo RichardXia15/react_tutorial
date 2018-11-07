@@ -15,7 +15,7 @@ class PersonCardList extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        fetch('https://randomuser.me/api/?results=25')
+        fetch('https://randomuser.me/api/?results=10')
             .then(response => {
                 if (response.ok) {
                     return response.json();
