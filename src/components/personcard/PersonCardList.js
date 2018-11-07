@@ -59,7 +59,7 @@ class PersonCardList extends Component {
                             </div>
                             <ul className="list-group list-group-flush">
                                 {users.map(function (user, i) {
-                                    if (user == selectedUser)
+                                    if (user === selectedUser)
                                     {
                                         return (
                                             <li className="list-group-item selected" key={i}>
