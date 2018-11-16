@@ -15,7 +15,7 @@ class PersonCardList extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        fetch('https://randomuser.me/api/?results=25')
+        fetch('https://randomuser.me/api/?results=10')
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -59,7 +59,7 @@ class PersonCardList extends Component {
                             </div>
                             <ul className="list-group list-group-flush">
                                 {users.map(function (user, i) {
-                                    if (user == selectedUser)
+                                    if (user === selectedUser)
                                     {
                                         return (
                                             <li className="list-group-item selected" key={i}>
