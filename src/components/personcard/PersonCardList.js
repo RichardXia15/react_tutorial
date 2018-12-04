@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/PersonCardList.css';
 
+
 class PersonCardList extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -15,7 +17,7 @@ class PersonCardList extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        fetch('https://randomuser.me/api/?results=10')
+        fetch('http://localhost:1234/users/many/5')
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -24,14 +26,53 @@ class PersonCardList extends Component {
                     throw new Error("something went wrong ...")
                 }
             }).then(data => {
-                this.setState({ users: data.results, isLoading: false });
+                this.setState({ users: data, isLoading: false });
             }).catch(error => {
                 this.setState({ error: error, isLoading: false })
             });
     }
 
+    handleChange(event) {
+        var temp = this.state.selectedUser;
+
+        switch(event.target.id) {
+            case "FirstNameForm":
+                temp.name.first = event.target.value;
+                this.setState({selectedUser: temp});
+                break;
+            case "LastNameForm":
+                temp.name.last = event.target.value;
+                this.setState({selectedUser: temp});
+                break;
+            case "EmailForm":
+                temp.email = event.target.value;
+                this.setState({selectedUser: temp});
+                break;
+        }
+    }
+
+    saveUser() {
+        const {selectedUser} = this.state;
+        var temp = {
+            name: {
+                title: selectedUser.name.title,
+                first: selectedUser.name.first,
+                last: selectedUser.name.last
+            },
+            email: selectedUser.email
+        };
+
+        fetch('http://localhost:1234/users/'+ selectedUser._id +'/update', {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(temp)
+        })
+        .then(res => res.text())
+        .then(res => alert(res))
+    }
+
     selectUser(user) {
-        this.setState({selectedUser: user})
+        this.setState({selectedUser: user});
     }
 
     render() {
@@ -49,6 +90,7 @@ class PersonCardList extends Component {
                 </div>
             );
         }
+
         return (
             <div className="person-card-list">
                 <div className="row">
@@ -63,13 +105,13 @@ class PersonCardList extends Component {
                                     {
                                         return (
                                             <li className="list-group-item selected" key={i}>
-                                                <img className="circle-image" src={user.picture.large} alt="Card cap"></img>
+                                                <img className="circle-image" src={user.picture} alt="Card cap"></img>
                                                 {user.name.first + ' ' + user.name.last}
                                             </li>)
                                     }
                                     return (
                                         <li className="list-group-item" onClick={this.selectUser.bind(this, user)} key={i}>
-                                            <img className="circle-image" src={user.picture.large} alt="Card cap"></img>
+                                            <img className="circle-image" src={user.picture} alt="Card cap"></img>
                                             {user.name.first + ' ' + user.name.last}
                                         </li>
                                     );
@@ -78,7 +120,8 @@ class PersonCardList extends Component {
                         </div>
                     </div>
                     <div className="col-md-8">
-                        <PersonInfoCard user={selectedUser}/>
+                        <PersonInfoCard user={selectedUser} handleChange={this.handleChange.bind(this)} 
+                            saveUser={this.saveUser.bind(this)} />
                     </div>
                 </div>
             </div>
@@ -97,17 +140,38 @@ function PersonInfoCard(props) {
         );
     }
 
-    const { user } = props;
+    const { user, handleChange, saveUser } = props;
 
     return (
         <div className="card">
             <div className="card-header">
-                <img className="circle-image" src={user.picture.large} alt="Card cap"></img>
-                {user.name.first + " " + user.name.last}
+                <div className="row">
+                    <div className="col-md-6">
+                        <img className="circle-image" src={user.picture} alt="Card cap"></img>
+                        {user.name.first + " " + user.name.last}
+                    </div>
+                </div>
             </div>
             <div className="card-body">
-                <h5 className="card-title">Username: {user.login.username}</h5>
-                <h6 className="card-subtitle mb-2 text-muted">Id: {user.id.name + "-" + user.id.value}</h6>
+                <h6 className="card-subtitle mb-2 text-muted">Id: {user._id}</h6>
+                <form>
+                    <div className="form-group">
+                        <label htmlFor="FirstNameForm">First Name:</label>
+                        <input type="text" className="form-control" id="FirstNameForm" 
+                            value={user.name.first} onChange={handleChange}></input>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="LastNameForm">Last Name:</label>
+                        <input type="text" className="form-control" id="LastNameForm" 
+                            value={user.name.last} onChange={handleChange}></input>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="EmailForm">Email:</label>
+                        <input type="text" className="form-control" id="EmailForm" 
+                            value={user.email} onChange={handleChange}></input>
+                    </div>
+                </form>
+                <a className="btn btn-primary" onClick={saveUser}>Save Changes</a>
             </div>
         </div>
     );
