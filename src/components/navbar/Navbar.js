@@ -7,6 +7,8 @@ class Navbar extends Component {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <a className="navbar-brand" href="google.com">Random User App</a>
             </nav>
+			
+			<!--somethingsomething-->
         );
     }
 }
